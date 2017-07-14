@@ -1,7 +1,6 @@
 package br.com.cmaia.service.resource.property;
 
 public class PropertySearchResource {
-
     private int ax;
     private int ay;
     private int bx;

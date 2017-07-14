@@ -30,7 +30,7 @@ public class SwaggerConfiguration {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Spottipos")
+                .title("Spotippos")
                 .description("Spottipos")
                 .version("1.0.0-SNAPSHOT")
                 .build();

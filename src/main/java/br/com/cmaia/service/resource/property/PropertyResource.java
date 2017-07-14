@@ -3,14 +3,23 @@ package br.com.cmaia.service.resource.property;
 import java.math.BigDecimal;
 
 public class PropertyResource {
+    private Long id;
     private int x;
     private int y;
     private String title;
-    private BigDecimal price;
+    private BigDecimal price; // This should use the money pattern
     private String description;
     private int beds;
     private int baths;
     private double squareMeters;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public int getX() {
         return x;

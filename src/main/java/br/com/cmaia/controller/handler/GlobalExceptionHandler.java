@@ -1,5 +1,6 @@
 package br.com.cmaia.controller.handler;
 
+import br.com.cmaia.exception.ResourceNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.TypeMismatchException;
@@ -33,6 +34,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleMediaNotSupported(HttpMediaTypeNotSupportedException e) {
         return new ResponseEntity<>("Http media type not supported for this operation, " +
                 "please check api documentation and try again with correct type." + e.getMessage(), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> handleResourceNotFound(ResourceNotFoundException e) {
+        return new ResponseEntity<>("Resource not found." + e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)

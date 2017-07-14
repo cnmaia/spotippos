@@ -27,6 +27,13 @@ public class PropertyController {
         this.propertyService = propertyService;
     }
 
+    @RequestMapping(value = { "", "/" }, method = RequestMethod.POST)
+    public ResponseEntity<PropertyResource> createProperty(@Valid @RequestBody PropertyResource resource) {
+        this.propertyService.create(resource);
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
     @RequestMapping(value = { "", "/" }, method = RequestMethod.GET)
     public ResponseEntity<PropertyResource> searchProperty(@RequestParam(value = "ax") int ax,
                                                            @RequestParam("ay") int ay,
@@ -44,12 +51,5 @@ public class PropertyController {
         this.propertyService.findById(id);
 
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @RequestMapping(value = { "", "/" }, method = RequestMethod.POST)
-    public ResponseEntity<PropertyResource> createProperty(@Valid @RequestBody PropertyResource resource) {
-        this.propertyService.create(resource);
-
-        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
