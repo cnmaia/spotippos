@@ -37,6 +37,8 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
+mainClassName = "br.com.cmaia.Application"
+
 task wrapper(type: Wrapper) {
     gradleVersion = '4.0.1'
 }
@@ -46,5 +48,5 @@ jar {
 }
 
 tasks.withType(Jar) {
-    destinationDir = file('dist')
+    destinationDir = file('dist/app')
 }

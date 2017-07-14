@@ -1,0 +1,6 @@
+FROM postgres:9.6
+MAiNTAINER cmaia
+
+ENV POSTGRES_USER spotippos
+ENV POSTGRES_PASSWORD spotippos
+ENV POSTGRES_DB spotippos
