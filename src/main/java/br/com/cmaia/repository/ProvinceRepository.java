@@ -1,9 +1,8 @@
 package br.com.cmaia.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import br.com.cmaia.domain.model.Province;
-import java.util.Set;
 
-public interface ProvinceRepository {
-
-    Set<Province> findAll();
+public interface ProvinceRepository extends JpaRepository<Province, Long> {
 }

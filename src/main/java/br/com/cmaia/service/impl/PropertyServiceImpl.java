@@ -1,23 +1,24 @@
 package br.com.cmaia.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
 import br.com.cmaia.domain.filter.PropertyFilter;
 import br.com.cmaia.domain.model.Property;
 import br.com.cmaia.domain.model.Province;
 import br.com.cmaia.domain.model.ProvinceBoundary;
+import br.com.cmaia.domain.validator.Validator;
+import br.com.cmaia.domain.validator.property.CreatePropertyValidator;
 import br.com.cmaia.exception.ResourceNotFoundException;
-import br.com.cmaia.repository.ProvinceRepository;
-import java.util.HashSet;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import br.com.cmaia.repository.PropertyRepository;
+import br.com.cmaia.repository.ProvinceRepository;
 import br.com.cmaia.service.PropertyService;
 import br.com.cmaia.service.resource.converter.PropertyResourceConverter;
 import br.com.cmaia.service.resource.property.PropertyResource;
 import br.com.cmaia.service.resource.property.PropertySearchResource;
-import java.util.Optional;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,8 @@ public class PropertyServiceImpl implements PropertyService {
 
     private PropertyResourceConverter propertyResourceConverter;
 
+    private Validator<Property> createPropertyValidator;
+
     @Autowired
     public PropertyServiceImpl(PropertyRepository propertyRepository,
                                ProvinceRepository provinceRepository) {
@@ -36,45 +39,45 @@ public class PropertyServiceImpl implements PropertyService {
         this.provinceRepository = provinceRepository;
 
         this.propertyResourceConverter = new PropertyResourceConverter();
+
+        this.createPropertyValidator = new CreatePropertyValidator();
     }
 
     @Override
     public void create(PropertyResource resource) {
         Property property = propertyResourceConverter.fromResource(resource);
 
-        // calculate provinces
         property.setProvinces(this.calculateProvinces(property.getX(), property.getY()));
 
+        this.createPropertyValidator.validate(property).verify();
 
-        this.propertyRepository.create(property);
+        this.propertyRepository.save(property);
     }
 
     @Override
     public PropertyResource findById(Long id) {
-        Optional<Property> optProperty = this.propertyRepository.find(id);
+        Property property = this.propertyRepository.findOne(id);
 
-        if (optProperty.isPresent())
-            return this.propertyResourceConverter.toResource(optProperty.get());
+        if (property != null)
+            return this.propertyResourceConverter.toResource(property);
 
-        throw new ResourceNotFoundException("Change this exception");
+        throw new ResourceNotFoundException(String.format("Property with id [%d] not found.", id));
     }
 
     @Override
-    public List<PropertyResource> search(PropertySearchResource resource) {
+    public List<PropertyResource> search(PropertySearchResource resource, Pageable pageable) {
         ProvinceBoundary upperLeft = new ProvinceBoundary(resource.getAx(), resource.getAy());
         ProvinceBoundary bottomRight = new ProvinceBoundary(resource.getBx(), resource.getBy());
 
-        Set<Property> propertiesFiltered = this.propertyRepository.search(new PropertyFilter(upperLeft, bottomRight));
+        Set<Property> propertiesFiltered = this.propertyRepository.searchByPosition(new PropertyFilter(upperLeft, bottomRight));
 
         return propertiesFiltered.stream().map(propertyResourceConverter::toResource).collect(Collectors.toList());
     }
 
     private Set<Province> calculateProvinces(int x, int y) {
         return new HashSet<>(this.provinceRepository.findAll().stream()
-                .filter(p -> x >= p.getUpperLeftBoundary().getX() &&
-                        x <= p.getUpperLeftBoundary().getY() &&
-                        y <= p.getBottomRightBoundary().getX() &&
-                        y >= p.getBottomRightBoundary().getY())
+                .filter(p -> (x >= p.getUpperLeftBoundary().getX() && x <= p.getUpperLeftBoundary().getY()) &&
+                        (y <= p.getBottomRightBoundary().getX() && y >= p.getBottomRightBoundary().getY()))
                 .collect(Collectors.toList()));
     }
 }

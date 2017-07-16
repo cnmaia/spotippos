@@ -1,10 +1,14 @@
 package br.com.cmaia.service.resource.property;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigDecimal;
 
 public class PropertyResource {
     private Long id;
+    @JsonProperty("long")
     private int x;
+    @JsonProperty("lat")
     private int y;
     private String title;
     private BigDecimal price; // This should use the money pattern

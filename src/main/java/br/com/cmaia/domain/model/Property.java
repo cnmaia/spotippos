@@ -2,18 +2,41 @@ package br.com.cmaia.domain.model;
 
 import java.math.BigDecimal;
 import java.util.Set;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
+@Entity
 public class Property {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
     private BigDecimal price;
     private String description;
     private int x;
     private int y;
+    @Min(1)
+    @Max(5)
     private int beds;
+    @Min(1)
+    @Max(4)
     private int baths;
-    private Set<Province> provinces; // This could be calculated
+    @Min(20)
+    @Max(240)
     private double squareMeters;
+
+    @ManyToMany
+    @JoinTable(name = "property_province",
+            joinColumns = { @JoinColumn(name = "property_id") },
+            inverseJoinColumns = { @JoinColumn(name = "province_id" )})
+    private Set<Province> provinces; // This could be calculated
 
     public Long getId() {
         return id;
@@ -93,5 +116,21 @@ public class Property {
 
     public void setSquareMeters(double squareMeters) {
         this.squareMeters = squareMeters;
+    }
+
+    @Override
+    public String toString() {
+        return "Property{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", price=" + price +
+                ", description='" + description + '\'' +
+                ", x=" + x +
+                ", y=" + y +
+                ", beds=" + beds +
+                ", baths=" + baths +
+                ", provinces=" + provinces +
+                ", squareMeters=" + squareMeters +
+                '}';
     }
 }

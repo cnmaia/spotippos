@@ -1,8 +1,11 @@
 package br.com.cmaia.controller;
 
+import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,22 +37,29 @@ public class PropertyController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    // TODO Remove, test only purpose
+    @RequestMapping(value = "/batch", method = RequestMethod.POST)
+    public ResponseEntity<Void> createBatchProperties(@RequestBody List<PropertyResource> resources) {
+        resources.forEach(r -> this.propertyService.create(r));
+
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
     @RequestMapping(value = { "", "/" }, method = RequestMethod.GET)
-    public ResponseEntity<PropertyResource> searchProperty(@RequestParam(value = "ax") int ax,
-                                                           @RequestParam("ay") int ay,
-                                                           @RequestParam("bx") int bx,
-                                                           @RequestParam("by") int by) {
+    public ResponseEntity<Page<PropertyResource>> searchProperty(@RequestParam(value = "ax") int ax,
+                                                                @RequestParam("ay") int ay,
+                                                                @RequestParam("bx") int bx,
+                                                                @RequestParam("by") int by,
+                                                                Pageable pageable) {
         PropertySearchResource propertySearchResource = new PropertySearchResource(ax, ay, bx, by);
 
-        this.propertyService.search(propertySearchResource);
+        this.propertyService.search(propertySearchResource, pageable);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ResponseEntity<PropertyResource> findPropertyById(@PathVariable("id") Long id) {
-        this.propertyService.findById(id);
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(this.propertyService.findById(id), HttpStatus.OK);
     }
 }

@@ -1,8 +1,11 @@
 package br.com.cmaia.controller.handler;
 
 import br.com.cmaia.exception.ResourceNotFoundException;
+import br.com.cmaia.exception.ValidationException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +16,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<String> handleIllegalArgumentException() {
@@ -41,9 +46,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>("Resource not found." + e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<String> handleValidationException(ValidationException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleGenericException(HttpServletRequest request, Exception ex) {
-//        LOGGER.error("url='{}'", request.getRequestURI(), ex);
+        logger.error("url='{}'", request.getRequestURI(), ex);
         return new ResponseEntity<>("", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

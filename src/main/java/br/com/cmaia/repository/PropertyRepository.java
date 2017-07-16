@@ -1,12 +1,15 @@
 package br.com.cmaia.repository;
 
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
+
 import br.com.cmaia.domain.filter.PropertyFilter;
 import br.com.cmaia.domain.model.Property;
-import java.util.Optional;
 import java.util.Set;
 
-public interface PropertyRepository {
-    Optional<Property> find(Long id);
-    Property create(Property property);
-    Set<Property> search(PropertyFilter filter);
+public interface PropertyRepository extends PagingAndSortingRepository<Property, Long> {
+    @Query("select p from property p where (p.x >= :#{#filter.upperLeftBoundary.x} and p.x <= :#{#filter.upperLeftBoundary.y}) " +
+            "and (p.y >= :#{#filter.bottomRightBoundary.x} and p.y <= :#{#filter.upperLeftBoundary.y})")
+    Set<Property> searchByPosition(@Param("filter") PropertyFilter filter);
 }

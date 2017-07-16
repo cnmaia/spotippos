@@ -1,8 +1,15 @@
 package br.com.cmaia.domain.model;
 
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class ProvinceBoundary {
-    private final int x;
-    private final int y;
+    private int x;
+    private int y;
+
+    public ProvinceBoundary() {
+
+    }
 
     public ProvinceBoundary(int x, int y) {
         this.x = x;
@@ -15,5 +22,13 @@ public class ProvinceBoundary {
 
     public int getY() {
         return y;
+    }
+
+    @Override
+    public String toString() {
+        return "ProvinceBoundary{" +
+                "x=" + x +
+                ", y=" + y +
+                '}';
     }
 }
