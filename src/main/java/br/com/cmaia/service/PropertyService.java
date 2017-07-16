@@ -1,16 +1,15 @@
 package br.com.cmaia.service;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.List;
 
 import br.com.cmaia.service.resource.property.PropertyResource;
 import br.com.cmaia.service.resource.property.PropertySearchResource;
 
 public interface PropertyService {
-    void create(PropertyResource resource);
+    PropertyResource create(final PropertyResource resource);
 
-    PropertyResource findById(Long id);
+    PropertyResource findById(final Long id);
 
-    List<PropertyResource> search(PropertySearchResource resource, Pageable pageable);
+    Page<PropertyResource> search(final PropertySearchResource resource, final Pageable pageable);
 }

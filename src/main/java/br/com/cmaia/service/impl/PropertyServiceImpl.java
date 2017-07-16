@@ -1,6 +1,7 @@
 package br.com.cmaia.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,6 @@ import br.com.cmaia.service.resource.converter.PropertyResourceConverter;
 import br.com.cmaia.service.resource.property.PropertyResource;
 import br.com.cmaia.service.resource.property.PropertySearchResource;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -44,18 +44,18 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
-    public void create(PropertyResource resource) {
+    public PropertyResource create(final PropertyResource resource) {
         Property property = propertyResourceConverter.fromResource(resource);
 
         property.setProvinces(this.calculateProvinces(property.getX(), property.getY()));
 
         this.createPropertyValidator.validate(property).verify();
 
-        this.propertyRepository.save(property);
+        return propertyResourceConverter.toResource(this.propertyRepository.save(property));
     }
 
     @Override
-    public PropertyResource findById(Long id) {
+    public PropertyResource findById(final Long id) {
         Property property = this.propertyRepository.findOne(id);
 
         if (property != null)
@@ -65,13 +65,13 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
-    public List<PropertyResource> search(PropertySearchResource resource, Pageable pageable) {
+    public Page<PropertyResource> search(final PropertySearchResource resource, final Pageable pageable) {
         ProvinceBoundary upperLeft = new ProvinceBoundary(resource.getAx(), resource.getAy());
         ProvinceBoundary bottomRight = new ProvinceBoundary(resource.getBx(), resource.getBy());
 
-        Set<Property> propertiesFiltered = this.propertyRepository.searchByPosition(new PropertyFilter(upperLeft, bottomRight));
+        Page<Property> propertiesFiltered = this.propertyRepository.searchByPosition(new PropertyFilter(upperLeft, bottomRight), pageable);
 
-        return propertiesFiltered.stream().map(propertyResourceConverter::toResource).collect(Collectors.toList());
+        return propertiesFiltered.map(propertyResourceConverter::toResource);
     }
 
     private Set<Province> calculateProvinces(int x, int y) {

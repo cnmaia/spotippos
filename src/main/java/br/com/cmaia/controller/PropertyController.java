@@ -1,5 +1,6 @@
 package br.com.cmaia.controller;
 
+import br.com.cmaia.service.resource.property.PropertySearchResultResource;
 import java.util.List;
 import javax.validation.Valid;
 
@@ -32,9 +33,25 @@ public class PropertyController {
 
     @RequestMapping(value = { "", "/" }, method = RequestMethod.POST)
     public ResponseEntity<PropertyResource> createProperty(@Valid @RequestBody PropertyResource resource) {
-        this.propertyService.create(resource);
+        return new ResponseEntity<>(this.propertyService.create(resource), HttpStatus.CREATED);
+    }
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    @RequestMapping(value = { "", "/" }, method = RequestMethod.GET)
+    public ResponseEntity<Page<PropertyResource>> searchProperty(@RequestParam("ax") int ax,
+                                                                             @RequestParam("ay") int ay,
+                                                                             @RequestParam("bx") int bx,
+                                                                             @RequestParam("by") int by,
+                                                                             Pageable pageable) {
+        PropertySearchResource propertySearchResource = new PropertySearchResource(ax, ay, bx, by);
+
+        //TODO This payload does not correspond the example. Maybe wrap it in a new page with the desirable result.
+        // TODO Maybe no paginate at all.
+        return new ResponseEntity<>(this.propertyService.search(propertySearchResource, pageable), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public ResponseEntity<PropertyResource> findPropertyById(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(this.propertyService.findById(id), HttpStatus.OK);
     }
 
     // TODO Remove, test only purpose
@@ -43,23 +60,5 @@ public class PropertyController {
         resources.forEach(r -> this.propertyService.create(r));
 
         return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    @RequestMapping(value = { "", "/" }, method = RequestMethod.GET)
-    public ResponseEntity<Page<PropertyResource>> searchProperty(@RequestParam(value = "ax") int ax,
-                                                                @RequestParam("ay") int ay,
-                                                                @RequestParam("bx") int bx,
-                                                                @RequestParam("by") int by,
-                                                                Pageable pageable) {
-        PropertySearchResource propertySearchResource = new PropertySearchResource(ax, ay, bx, by);
-
-        this.propertyService.search(propertySearchResource, pageable);
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ResponseEntity<PropertyResource> findPropertyById(@PathVariable("id") Long id) {
-        return new ResponseEntity<>(this.propertyService.findById(id), HttpStatus.OK);
     }
 }

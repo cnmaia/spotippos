@@ -31,7 +31,7 @@ public class SwaggerConfiguration {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("Spotippos")
-                .description("Spottipos")
+                .description("Spotippos")
                 .version("1.0.0-SNAPSHOT")
                 .build();
     }

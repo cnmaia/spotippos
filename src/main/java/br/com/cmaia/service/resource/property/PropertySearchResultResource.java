@@ -5,18 +5,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Set;
 
 public class PropertySearchResultResource {
-    private final Set<PropertyResource> propertyResources;
+    private final Set<PropertyResource> properties;
 
-    public PropertySearchResultResource(Set<PropertyResource> propertyResources) {
-        this.propertyResources = propertyResources;
+    public PropertySearchResultResource(Set<PropertyResource> properties) {
+        this.properties = properties;
     }
 
     @JsonProperty("foundProperties")
     public int foundProperties() {
-        return this.propertyResources.size();
+        return this.properties.size();
     }
 
-    public Set<PropertyResource> getPropertyResources() {
-        return propertyResources;
+    public Set<PropertyResource> getProperties() {
+        return properties;
     }
 }

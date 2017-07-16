@@ -1,5 +1,6 @@
 package br.com.cmaia.controller.handler;
 
+import br.com.cmaia.controller.resource.ErrorResource;
 import br.com.cmaia.exception.ResourceNotFoundException;
 import br.com.cmaia.exception.ValidationException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,40 +21,40 @@ public class GlobalExceptionHandler {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException() {
-        return new ResponseEntity<>("Invalid parameters, please try again.", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ErrorResource> handleIllegalArgumentException() {
+        return new ResponseEntity<>(new ErrorResource("Invalid parameters, please try again."), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(TypeMismatchException.class)
-    public ResponseEntity<String> handleNumberFormatException() {
-        return new ResponseEntity<>("Invalid parameters, please try again with correct types.", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ErrorResource> handleNumberFormatException() {
+        return new ResponseEntity<>(new ErrorResource("Invalid parameters, please try again with correct types."), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<String> handleMethodNotSupported() {
-        return new ResponseEntity<>("Http method not supported for this operation, " +
-                "please check api documentation and try again with correct method.", HttpStatus.METHOD_NOT_ALLOWED);
+    public ResponseEntity<ErrorResource> handleMethodNotSupported() {
+        return new ResponseEntity<>(new ErrorResource("Http method not supported for this operation, " +
+                "please check api documentation and try again with correct method."), HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public ResponseEntity<String> handleMediaNotSupported(HttpMediaTypeNotSupportedException e) {
-        return new ResponseEntity<>("Http media type not supported for this operation, " +
-                "please check api documentation and try again with correct type." + e.getMessage(), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+    public ResponseEntity<ErrorResource> handleMediaNotSupported(HttpMediaTypeNotSupportedException e) {
+        return new ResponseEntity<>(new ErrorResource("Http media type not supported for this operation, " +
+                "please check api documentation and try again with correct type." + e.getMessage()), HttpStatus.UNSUPPORTED_MEDIA_TYPE);
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<String> handleResourceNotFound(ResourceNotFoundException e) {
-        return new ResponseEntity<>("Resource not found." + e.getMessage(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<ErrorResource> handleResourceNotFound(ResourceNotFoundException e) {
+        return new ResponseEntity<>(new ErrorResource("Resource not found." + e.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<String> handleValidationException(ValidationException e) {
-        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ErrorResource> handleValidationException(ValidationException e) {
+        return new ResponseEntity<>(new ErrorResource(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleGenericException(HttpServletRequest request, Exception ex) {
+    public ResponseEntity<ErrorResource> handleGenericException(HttpServletRequest request, Exception ex) {
         logger.error("url='{}'", request.getRequestURI(), ex);
-        return new ResponseEntity<>("", HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(new ErrorResource("An error occurred in server, please try again later."), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

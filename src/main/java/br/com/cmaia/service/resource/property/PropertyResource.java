@@ -3,6 +3,8 @@ package br.com.cmaia.service.resource.property;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 public class PropertyResource {
     private Long id;
@@ -13,8 +15,14 @@ public class PropertyResource {
     private String title;
     private BigDecimal price; // This should use the money pattern
     private String description;
+    @Max(5)
+    @Min(1)
     private int beds;
+    @Max(4)
+    @Min(1)
     private int baths;
+    @Max(240)
+    @Min(20)
     private double squareMeters;
 
     public Long getId() {

@@ -7,8 +7,12 @@ import br.com.cmaia.service.resource.property.PropertyResource;
 public class PropertyResourceConverter implements ResourceConverter<Property, PropertyResource> {
     @Override
     public Property fromResource(PropertyResource resource) {
+        if (resource == null)
+            return null;
+
         Property property = new Property();
 
+        property.setId(resource.getId());
         property.setBaths(resource.getBaths());
         property.setBeds(resource.getBeds());
         property.setDescription(resource.getDescription());
@@ -23,6 +27,9 @@ public class PropertyResourceConverter implements ResourceConverter<Property, Pr
 
     @Override
     public PropertyResource toResource(Property entity) {
+        if (entity == null)
+            return null;
+
         PropertyResource resource = new PropertyResource();
 
         resource.setId(entity.getId());
