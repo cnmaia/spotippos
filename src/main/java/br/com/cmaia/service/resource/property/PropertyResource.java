@@ -3,6 +3,7 @@ package br.com.cmaia.service.resource.property;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
+import java.util.Set;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
@@ -24,6 +25,7 @@ public class PropertyResource {
     @Max(240)
     @Min(20)
     private double squareMeters;
+    private Set<String> provinces;
 
     public Long getId() {
         return id;
@@ -95,5 +97,13 @@ public class PropertyResource {
 
     public void setSquareMeters(double squareMeters) {
         this.squareMeters = squareMeters;
+    }
+
+    public Set<String> getProvinces() {
+        return provinces;
+    }
+
+    public void setProvinces(Set<String> provinces) {
+        this.provinces = provinces;
     }
 }

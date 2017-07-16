@@ -11,7 +11,7 @@ import br.com.cmaia.domain.model.Property;
 import java.util.Set;
 
 public interface PropertyRepository extends PagingAndSortingRepository<Property, Long> {
-    @Query("select p from property p where (p.x >= :#{#filter.upperLeftBoundary.x} and p.x <= :#{#filter.upperLeftBoundary.y}) " +
+    @Query("select p from Property p where (p.x >= :#{#filter.upperLeftBoundary.x} and p.x <= :#{#filter.upperLeftBoundary.y}) " +
             "and (p.y >= :#{#filter.bottomRightBoundary.x} and p.y <= :#{#filter.upperLeftBoundary.y})")
     Page<Property> searchByPosition(@Param("filter") PropertyFilter filter, final Pageable pageable);
 }

@@ -1,8 +1,10 @@
 package br.com.cmaia.service.resource.converter;
 
 import br.com.cmaia.domain.model.Property;
+import br.com.cmaia.domain.model.Province;
 import br.com.cmaia.service.resource.ResourceConverter;
 import br.com.cmaia.service.resource.property.PropertyResource;
+import java.util.stream.Collectors;
 
 public class PropertyResourceConverter implements ResourceConverter<Property, PropertyResource> {
     @Override
@@ -41,6 +43,7 @@ public class PropertyResourceConverter implements ResourceConverter<Property, Pr
         resource.setTitle(entity.getTitle());
         resource.setX(entity.getX());
         resource.setY(entity.getY());
+        resource.setProvinces(entity.getProvinces().stream().map(Province::getName).collect(Collectors.toSet()));
 
         return resource;
     }

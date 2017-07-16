@@ -30,8 +30,6 @@ public class PropertyServiceImpl implements PropertyService {
 
     private PropertyResourceConverter propertyResourceConverter;
 
-    private Validator<Property> createPropertyValidator;
-
     @Autowired
     public PropertyServiceImpl(PropertyRepository propertyRepository,
                                ProvinceRepository provinceRepository) {
@@ -39,8 +37,6 @@ public class PropertyServiceImpl implements PropertyService {
         this.provinceRepository = provinceRepository;
 
         this.propertyResourceConverter = new PropertyResourceConverter();
-
-        this.createPropertyValidator = new CreatePropertyValidator();
     }
 
     @Override
@@ -49,7 +45,7 @@ public class PropertyServiceImpl implements PropertyService {
 
         property.setProvinces(this.calculateProvinces(property.getX(), property.getY()));
 
-        this.createPropertyValidator.validate(property).verify();
+        new CreatePropertyValidator().validate(property).verify();
 
         return propertyResourceConverter.toResource(this.propertyRepository.save(property));
     }
