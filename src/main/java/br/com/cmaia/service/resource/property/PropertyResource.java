@@ -3,29 +3,48 @@ package br.com.cmaia.service.resource.property;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 public class PropertyResource {
     private Long id;
-    @JsonProperty("long")
-    private int x;
     @JsonProperty("lat")
+    private int x;
+    @JsonProperty("long")
     private int y;
     private String title;
     private BigDecimal price; // This should use the money pattern
     private String description;
-    @Max(5)
-    @Min(1)
+    @Max(
+            value = 5,
+            message = "A property in Spotippos have a maximum of {value} beds."
+    )
+    @Min(
+            value = 1,
+            message = "A property in Spotippos have at least {value} beds."
+    )
     private int beds;
-    @Max(4)
-    @Min(1)
+    @Max(
+            value = 4,
+            message = "A property in Spotippos have a maximum of 4 baths."
+    )
+    @Min(
+            value = 1,
+            message = "A property in Spotippos have at least 4 baths."
+    )
     private int baths;
-    @Max(240)
-    @Min(20)
+    @Max(
+            value = 240,
+            message = "A property in Spotippos have a maximum of 240 square meters."
+    )
+    @Min(
+            value = 20,
+            message = "A property in Spotippos have at least 240 square meters."
+    )
     private double squareMeters;
-    private Set<String> provinces;
+    private Set<String> provinces = new HashSet<>();
 
     public Long getId() {
         return id;

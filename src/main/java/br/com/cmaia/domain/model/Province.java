@@ -87,4 +87,19 @@ public class Province {
                 ", bottomLeftBoundary=" + getBottomLeftBoundary() +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Province province = (Province) o;
+
+        return id != null ? id.equals(province.id) : province.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }

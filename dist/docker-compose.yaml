@@ -1,9 +1,16 @@
-app:
-  build: app/
-  ports:
-  - "8080:8080"
-  links:
-  - db
-db:
-  build: db/
-
+version: '2'
+services:
+  db:
+    image: postgres:9.6
+    expose:
+      - "5432"
+    environment:
+      POSTGRES_USER: spotippos
+      POSTGRES_PASSWORD: spotippos
+      POSTGRES_DB: spotippos
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db

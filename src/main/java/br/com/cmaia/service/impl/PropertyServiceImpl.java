@@ -16,9 +16,12 @@ import br.com.cmaia.repository.PropertyRepository;
 import br.com.cmaia.repository.ProvinceRepository;
 import br.com.cmaia.service.PropertyService;
 import br.com.cmaia.service.resource.converter.PropertyResourceConverter;
+import br.com.cmaia.service.resource.property.PagedPropertyResource;
 import br.com.cmaia.service.resource.property.PropertyResource;
 import br.com.cmaia.service.resource.property.PropertySearchResource;
+import br.com.cmaia.service.resource.property.PropertySearchResultResource;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -43,7 +46,11 @@ public class PropertyServiceImpl implements PropertyService {
     public PropertyResource create(final PropertyResource resource) {
         Property property = propertyResourceConverter.fromResource(resource);
 
-        property.setProvinces(this.calculateProvinces(property.getX(), property.getY()));
+        property.setProvinces(this.provinceRepository.findProvinceByPoint(property.getX(), property.getY()));
+
+        if (property.getProvinces().isEmpty()) {
+            System.out.println(property.toString());
+        }
 
         new CreatePropertyValidator().validate(property).verify();
 
@@ -61,19 +68,13 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
-    public Page<PropertyResource> search(final PropertySearchResource resource, final Pageable pageable) {
+    public PropertySearchResultResource search(final PropertySearchResource resource, final Pageable pageable) {
         ProvinceBoundary upperLeft = new ProvinceBoundary(resource.getAx(), resource.getAy());
         ProvinceBoundary bottomRight = new ProvinceBoundary(resource.getBx(), resource.getBy());
 
-        Page<Property> propertiesFiltered = this.propertyRepository.searchByPosition(new PropertyFilter(upperLeft, bottomRight), pageable);
-
-        return propertiesFiltered.map(propertyResourceConverter::toResource);
-    }
-
-    private Set<Province> calculateProvinces(int x, int y) {
-        return new HashSet<>(this.provinceRepository.findAll().stream()
-                .filter(p -> (x >= p.getUpperLeftBoundary().getX() && x <= p.getUpperLeftBoundary().getY()) &&
-                        (y <= p.getBottomRightBoundary().getX() && y >= p.getBottomRightBoundary().getY()))
-                .collect(Collectors.toList()));
+        return new PropertySearchResultResource(this.propertyRepository.searchByPosition(new PropertyFilter(upperLeft, bottomRight), pageable)
+                .stream()
+                .map(propertyResourceConverter::toResource)
+                .collect(Collectors.toSet()));
     }
 }

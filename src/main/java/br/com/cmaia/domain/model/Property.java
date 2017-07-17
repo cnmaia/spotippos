@@ -1,6 +1,7 @@
 package br.com.cmaia.domain.model;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +12,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Property {
@@ -22,21 +25,44 @@ public class Property {
     private String description;
     private int x;
     private int y;
-    @Min(1)
-    @Max(5)
+    @Max(
+            value = 5,
+            message = "A property in Spotippos have a maximum of {value} beds."
+    )
+    @Min(
+            value = 1,
+            message = "A property in Spotippos have at least {value} beds."
+    )
     private int beds;
-    @Min(1)
-    @Max(4)
+    @Max(
+            value = 4,
+            message = "A property in Spotippos have a maximum of {value} baths."
+    )
+    @Min(
+            value = 1,
+            message = "A property in Spotippos have at least {value} baths."
+    )
     private int baths;
-    @Min(20)
-    @Max(240)
+    @Max(
+            value = 240,
+            message = "A property in Spotippos have a maximum of {value} square meters."
+    )
+    @Min(
+            value = 20,
+            message = "A property in Spotippos have at least {value} square meters."
+    )
     private double squareMeters;
 
     @ManyToMany
     @JoinTable(name = "property_province",
             joinColumns = { @JoinColumn(name = "property_id") },
             inverseJoinColumns = { @JoinColumn(name = "province_id" )})
-    private Set<Province> provinces; // This could be calculated
+    @NotNull(message = "A property in Spotippos have at least {value} provinces.")
+    @Size(
+            min = 1,
+            message = "A property in Spotippos have at least {value} provinces."
+    )
+    private Set<Province> provinces = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -132,5 +158,20 @@ public class Property {
                 ", provinces=" + provinces +
                 ", squareMeters=" + squareMeters +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Property property = (Property) o;
+
+        return id != null ? id.equals(property.id) : property.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }

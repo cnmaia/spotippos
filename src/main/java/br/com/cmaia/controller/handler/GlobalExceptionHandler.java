@@ -4,12 +4,14 @@ import br.com.cmaia.controller.resource.ErrorResource;
 import br.com.cmaia.exception.ResourceNotFoundException;
 import br.com.cmaia.exception.ValidationException;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -18,7 +20,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResource> handleIllegalArgumentException() {
@@ -27,6 +29,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(TypeMismatchException.class)
     public ResponseEntity<ErrorResource> handleNumberFormatException() {
+        return new ResponseEntity<>(new ErrorResource("Invalid parameters, please try again with correct types."), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResource> handleMessageNotReadableException() {
         return new ResponseEntity<>(new ErrorResource("Invalid parameters, please try again with correct types."), HttpStatus.BAD_REQUEST);
     }
 
@@ -54,7 +61,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResource> handleGenericException(HttpServletRequest request, Exception ex) {
-        logger.error("url='{}'", request.getRequestURI(), ex);
+        LOGGER.error("url='{}'", request.getRequestURI(), ex);
         return new ResponseEntity<>(new ErrorResource("An error occurred in server, please try again later."), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResource> handle(ConstraintViolationException e) {
+        return new ResponseEntity<>(new ErrorResource(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 }

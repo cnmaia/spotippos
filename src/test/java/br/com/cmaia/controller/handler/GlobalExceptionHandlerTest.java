@@ -30,6 +30,14 @@ public class GlobalExceptionHandlerTest {
     }
 
     @Test
+    public void testHandleMessageNotReadableExceptionHttpStatusShouldBeBadRequest() {
+        ResponseEntity responseEntity = this.globalExceptionHandler.handleMessageNotReadableException();
+
+        assertNotNull(responseEntity);
+        assertEquals(400, responseEntity.getStatusCodeValue());
+    }
+
+    @Test
     public void testHandleNumberFormatExceptionHttpStatusShouldBeBadRequest() {
         ResponseEntity responseEntity = this.globalExceptionHandler.handleNumberFormatException();
 

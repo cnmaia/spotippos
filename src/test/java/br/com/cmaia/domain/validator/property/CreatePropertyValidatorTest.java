@@ -43,25 +43,4 @@ public class CreatePropertyValidatorTest {
 
         createPropertyValidator.validate(property).verify();
     }
-
-    @Test(expected = ValidationException.class)
-    public void testValidateWithProvincesNullShouldThrowValidationException() {
-        Property property = new Property();
-        property.setSquareMeters(100.0d);
-        property.setBeds(1);
-        property.setBaths(1);
-
-        createPropertyValidator.validate(property).verify();
-    }
-
-    @Test(expected = ValidationException.class)
-    public void testValidationWithProvincesEmptyShouldThrowValidationException() {
-        Property property = new Property();
-        property.setSquareMeters(100.0d);
-        property.setBeds(1);
-        property.setBaths(1);
-        property.setProvinces(Collections.emptySet());
-
-        createPropertyValidator.validate(property).verify();
-    }
 }

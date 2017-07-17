@@ -23,7 +23,6 @@ ext {
 configurations.all {
     exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-    exclude group: 'org.springframework.boot', module: 'logback-classic'
 }
 
 dependencies {
@@ -37,8 +36,12 @@ dependencies {
     compile("org.hibernate:hibernate-validator:5.4.1.Final")
 
     // Documentation
-    compile("io.springfox:springfox-swagger2:$swaggerVersion")
-    compile("io.springfox:springfox-swagger-ui:$swaggerVersion")
+    compile("io.springfox:springfox-swagger2:$swaggerVersion") {
+        exclude group: "org.slf4j", module: "slf4j-api"
+    }
+    compile("io.springfox:springfox-swagger-ui:$swaggerVersion")  {
+        exclude group: "org.slf4j", module: "slf4j-api"
+    }
 
     testCompile("junit:junit:4.12")
     testCompile("org.mockito:mockito-core:2.8.9")
@@ -49,9 +52,9 @@ task wrapper(type: Wrapper) {
 }
 
 jar {
-    archiveName = 'spottipos.jar'
+    archiveName = 'spotippos.jar'
 }
 
 tasks.withType(Jar) {
-    destinationDir = file('dist/app')
+    destinationDir = file('dist')
 }

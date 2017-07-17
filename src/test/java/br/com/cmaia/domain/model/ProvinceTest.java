@@ -8,7 +8,7 @@ public class ProvinceTest {
     @Test
     public void testGetUpperRightBoundarySuccess() {
         Province province = new Province();
-        province.setUpperLeftBoundary(new ProvinceBoundary(10, 30)); // TODO Validate these values. HOW?
+        province.setUpperLeftBoundary(new ProvinceBoundary(10, 30));
         province.setBottomRightBoundary(new ProvinceBoundary(20, 10));
 
         assertNotNull(province.getUpperRightBoundary());
@@ -35,7 +35,7 @@ public class ProvinceTest {
     @Test
     public void testGetBottomLeftBoundarySuccess() {
         Province province = new Province();
-        province.setUpperLeftBoundary(new ProvinceBoundary(10, 30)); // TODO Validate these values. HOW?
+        province.setUpperLeftBoundary(new ProvinceBoundary(10, 30));
         province.setBottomRightBoundary(new ProvinceBoundary(20, 10));
 
         assertNotNull(province.getBottomLeftBoundary());
