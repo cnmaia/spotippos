@@ -1,5 +1,5 @@
 # Spotippos
-This is the application that attempts to solve VivaReal Code Challenge.
+This is the application that attempts to solve [VivaReal Code Challenge](http://vivareal.github.io/historia/).
 
 The application was built with Java 8 using spring boot framework and for persistence purposes the Postgres SQL was selected as candidate.
 
